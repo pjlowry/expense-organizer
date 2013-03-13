@@ -11,13 +11,13 @@ describe Expense do
           is_at_least(3).
           is_at_most(100)}
     it {should_not allow_value("345756").for(:expense_date)}      
-    it {should allow_value("12/12/12").for(:expense_date)} 
+    it {should allow_value("12/12/2012").for(:expense_date)} 
 
 
   end
 
   context 'associations' do
-    it {should have_many(:tag)}
+    it {should have_many(:tags)}
   end
 
 end

@@ -9,4 +9,7 @@ describe Tag do
     it {should_not allow_value("SDF$#").for(:name)}
     it {should allow_value("rent/mortgage").for(:name)}
   end
+  context 'associations' do
+    it {should belong_to(:expense)}
+  end
 end

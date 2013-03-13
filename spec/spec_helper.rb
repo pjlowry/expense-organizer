@@ -4,6 +4,7 @@ require 'shoulda-matchers'
 require 'expense'
 require 'tag'
 require 'date'
+require 'money'
 
 ActiveRecord::Base.establish_connection(YAML::load(File.open('./db/config.yml'))["test"])
 
