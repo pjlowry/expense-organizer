@@ -20,4 +20,13 @@ describe Expense do
     it {should have_many(:tags)}
   end
 
+  context 'callbacks' do
+    it 'converts the description to lowercase' do
+      expense = FactoryGirl.build :expense
+      original_description = expense.description
+      expense.save
+      expense.description.should eq original_description.downcase
+    end
+  end
+
 end

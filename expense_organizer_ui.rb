@@ -2,6 +2,7 @@ require 'active_record'
 require './lib/expense'
 require './lib/tag'
 require './lib/money'
+require './lib/pairing'
 
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
@@ -38,7 +39,7 @@ end
 
 def errors(record)
   if record.save
-    puts "'#{record.description}' has been added to your Expense Organizer."
+    puts "Added to your Expense Organizer."
     false
   else
     puts "There was something wrong with your data. Possible errors:"
@@ -63,24 +64,25 @@ def add
   else
     puts "What would you like to tag this?"
     tag_name = gets.chomp
-    until tag_name != ''
-      puts "NO! That will screw things up!"
+    tag = expense.tags.build(:name => tag_name)
+    until errors(tag) == false
+      puts "NO! That will screw things up! Enter again."
       tag_name = gets.chomp
+      tag = expense.tags.build(:name => tag_name)
     end
-    tag = expense.tags.create!(:name => tag_name)
   end
 end
 #      Money.new(gets.chomp.to_f.round(2))
 
 def list(expenses)
   puts "Here is a list of all your expenses:"
-  expenses.each {|expense| puts "    #{expense.expense_date} | #{expense.description} | #{Money.display(expense.price)} | #{expense.tags.first.name} | #{expense.percentage_of(expenses,expense)}"}
+  expenses.each {|expense| puts "    #{expense.expense_date} | #{expense.description} | #{Money.display(expense.price)} | #{expense.tags.first ? expense.tags.first.name : 'UNDEFINED'} | Percentage of #{expense.tags.first.name}: #{expense.category_percentage_of(expenses,expense)}"}
   #puts expenses.first.tags
 end
 
 def list_by_time
   puts "What is the earliest time you would like to see? (DD-MM-YYYY)"
-  earliest_date = Date.parse(gets.chomp)
+  earliest_date = Date.parse(gets.chomp) #may be unnecessary
   puts "What is the latest time you would like to see? (DD-MM-YYYY)"
   latest_date = Date.parse(gets.chomp)
   time_frame = Expense.where("expense_date >= ? AND expense_date <= ?", earliest_date, latest_date)
@@ -90,12 +92,13 @@ end
 def list_by_category
   puts "Here are all your existing tags:"
   tags = Tag.all
+  pairings = Pairing.all
   tags.each_with_index {|tag, i| puts "  #{i+1}. #{tag.name}"}
   puts "Which tags would you like to search for?"
   tag_number = gets.chomp.to_i
   tag = tags[tag_number-1]
   puts "Here are all the expenses for that tag:"
-  list(Expense.where(:id => tag.expense_id))
+  list(tag.expenses)
 end
 
 def invalid

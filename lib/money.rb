@@ -1,6 +1,6 @@
 class Money
-  def initialize(price)
-    @price = price
+  def initialize(float_price)
+    @price = float_price
   end
 
   def to_i
