@@ -38,7 +38,9 @@ def menu
 end
 
 def errors(record)
+  p record
   if record.save
+    p record
     puts "Added to your Expense Organizer."
     false
   else
@@ -70,14 +72,13 @@ def add
       tag_name = gets.chomp
       tag = expense.tags.build(:name => tag_name)
     end
+    tag.expenses << expense
   end
 end
-#      Money.new(gets.chomp.to_f.round(2))
 
 def list(expenses)
   puts "Here is a list of all your expenses:"
-  expenses.each {|expense| puts "    #{expense.expense_date} | #{expense.description} | #{Money.display(expense.price)} | #{expense.tags.first ? expense.tags.first.name : 'UNDEFINED'} | Percentage of #{expense.tags.first.name}: #{expense.category_percentage_of(expenses,expense)}"}
-  #puts expenses.first.tags
+  expenses.each {|expense| puts "    #{expense.expense_date} | #{expense.description} | #{Money.from_i(expense.price)} | #{expense.tags.first ? expense.tags.first.name : 'UNDEFINED'} | Percentage of tag: #{Expense.category_percentage_of(expenses,expense)}"}
 end
 
 def list_by_time
@@ -92,7 +93,6 @@ end
 def list_by_category
   puts "Here are all your existing tags:"
   tags = Tag.all
-  pairings = Pairing.all
   tags.each_with_index {|tag, i| puts "  #{i+1}. #{tag.name}"}
   puts "Which tags would you like to search for?"
   tag_number = gets.chomp.to_i

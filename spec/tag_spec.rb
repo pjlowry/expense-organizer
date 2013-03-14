@@ -11,7 +11,7 @@ describe Tag do
   end
   
   context 'associations' do
-    it {should have_many(:expenses)}
+    it { should have_many(:expenses) }
     it { should have_many(:expenses).through(:pairings) }
   end
 

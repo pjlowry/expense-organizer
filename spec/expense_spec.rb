@@ -29,4 +29,29 @@ describe Expense do
     end
   end
 
+  context '.percentage_of' do
+    it 'provides a percentage of an expense as compared to all expenses' do
+      expenses = (1..5).to_a.map { |expense| FactoryGirl.create :expense}
+      tags = (1..5).to_a.map { |tag| FactoryGirl.create :tag }
+      expenses.each_with_index { |expense,i| expense.update_attributes(:tags => [tags[i]]) }      
+      expenses_total = expenses.inject(0) { |total,expense| total += expense.price }
+      expense = expenses.first 
+
+      "%#{(expense.price.to_f/expenses_total.to_f).round(2)*100}".should eq Expense.percentage_of(expenses,expense)
+    end
+  end
+
+  context '#category_percentage_of' do
+    it 'give us the percentage of an expense as compared to a specific time frame category' do
+      expenses = (1..5).to_a.map { |expense| FactoryGirl.create :expense}
+      tags = (1..5).to_a.map { |tag| FactoryGirl.create :tag }
+      expenses.each_with_index { |expense,i| expense.update_attributes(:tags => [tags[i]]) }      
+      expenses_total = expenses.inject(0) { |total,expense| total += expense.price }
+      expense = expenses.first 
+
+      "%#{(expense.price.to_f/expenses_total.to_f).round(2)*100}".should eq Expense.category_percentage_of(expenses,expense)
+    end
+  end
 end
+
+

@@ -5,8 +5,8 @@ class Tag < ActiveRecord::Base
   validates :name, :presence => true
   validates :name, :length => { :in => 3..20 }
   validates :name, :format => { :with => /^[a-zA-Z0-9\-\/]+$/}
+  
   before_save :name_downcase
-
 
   private
 

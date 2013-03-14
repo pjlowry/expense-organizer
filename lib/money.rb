@@ -11,7 +11,7 @@ class Money
     "$%0.2f" % @price
   end
 
-  def self.display(whole_number)
+  def self.from_i(whole_number)
      "$%0.2f" % (whole_number.to_f/100)
   end
 end
